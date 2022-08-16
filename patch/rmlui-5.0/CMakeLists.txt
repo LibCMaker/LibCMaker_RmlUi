@@ -8,7 +8,7 @@ if(APPLE)
 	# This has to be before most other options so CMake properly handles the 
 	# compiler variables, it MUST bebefore the project() definition
 	if(IOS_PLATFORM)
-		set(CMAKE_TOOLCHAIN_FILE CMake/Platform/iOS.cmake)
+#		set(CMAKE_TOOLCHAIN_FILE CMake/Platform/iOS.cmake)
 	endif(IOS_PLATFORM)
 
 	option(BUILD_UNIVERSAL_BINARIES "Build universal binaries for all architectures supported" ON)
@@ -60,7 +60,7 @@ set(RMLUI_VERSION_RELEASE false)
 if(RMLUI_VERSION_RELEASE)
 	set(RMLUI_VERSION_SUFFIX "")
 else()
-	set(RMLUI_VERSION_SUFFIX "-dev")
+#	set(RMLUI_VERSION_SUFFIX "-dev")
 endif()
 
 set(RMLUI_VERSION_SHORT ${PROJECT_VERSION_MAJOR}.${PROJECT_VERSION_MINOR}${RMLUI_VERSION_SUFFIX})
@@ -146,9 +146,9 @@ endif(APPLE)
 #===================================
 
 if(NOT CMAKE_BUILD_TYPE)
-	set(CMAKE_BUILD_TYPE Release CACHE STRING
-		"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
-		FORCE)
+#	set(CMAKE_BUILD_TYPE Release CACHE STRING
+#		"Choose the type of build, options are: None Debug Release RelWithDebInfo MinSizeRel."
+#		FORCE)
 endif()
 
 if(NOT IOS)
@@ -183,21 +183,21 @@ option(MATRIX_ROW_MAJOR "Use row-major matrices. Column-major matrices are used 
 if(APPLE)
 	if(IOS)
 		if(BUILD_SHARED_LIBS)
-			message(FATAL_ERROR "BUILD_SHARED_LIBS must be OFF for iOS builds.  iOS does not support shared libraries.")
+#			message(FATAL_ERROR "BUILD_SHARED_LIBS must be OFF for iOS builds.  iOS does not support shared libraries.")
 		endif(BUILD_SHARED_LIBS)
 	endif(IOS)
 
 	if(BUILD_FRAMEWORK)
 		if(NOT "${CMAKE_GENERATOR}" STREQUAL "Xcode")
-			message(FATAL_ERROR "You should use Xcode generator with BUILD_FRAMEWORK enabled")
+#			message(FATAL_ERROR "You should use Xcode generator with BUILD_FRAMEWORK enabled")
 		endif()
 		if(NOT BUILD_SHARED_LIBS)
-			message(FATAL_ERROR "BUILD_SHARED_LIBS must be ON with BUILD_FRAMEWORK enabled")
+#			message(FATAL_ERROR "BUILD_SHARED_LIBS must be ON with BUILD_FRAMEWORK enabled")
 		endif()
 	endif()
 else(APPLE)
 	if(BUILD_FRAMEWORK)
-		message(FATAL_ERROR "BUILD_FRAMEWORK is only supported on Mac OS X with the Xcode generator")
+#		message(FATAL_ERROR "BUILD_FRAMEWORK is only supported on Mac OS X with the Xcode generator")
 	endif()
 endif(APPLE)
 
