@@ -9,7 +9,7 @@
 ]]
 function(generate_rmlui_version_string)
 	if(NOT RMLUI_VERSION_RELEASE)
-		set(RMLUI_VERSION_SUFFIX "-dev")
+#		set(RMLUI_VERSION_SUFFIX "-dev")
 	endif()
 	if(PROJECT_VERSION_PATCH GREATER 0)
 		set(RMLUI_VERSION_PATCH ".${PROJECT_VERSION_PATCH}")

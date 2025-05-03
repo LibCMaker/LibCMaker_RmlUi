@@ -10,9 +10,9 @@ project("RmlUi"
 
 set(RMLUI_VERSION_RELEASE TRUE)
 
-if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+#if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
 	set(RMLUI_IS_ROOT_PROJECT TRUE)
-endif()
+#endif()
 
 # Add lists of available options for those that support it
 include("CMake/OptionsLists.cmake")
