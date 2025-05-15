@@ -30,17 +30,20 @@ if(BUILD_TESTING)
     #-----------------------------------------------------------------------
 
     set(data_SRC_DIR "${CMAKE_CURRENT_LIST_DIR}/data")
-    set(font_SRC_DIR "${data_SRC_DIR}/fonts")
+    set(assets_SRC_DIR "${data_SRC_DIR}/assets")
 
     # Files in graphics_* differ in some bits.
     set(platform_graphics_SRC_DIR "${data_SRC_DIR}/graphics_1")
+
     if("${CMAKE_SYSTEM_NAME}" MATCHES "Linux" AND
         CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
       set(platform_graphics_SRC_DIR "${data_SRC_DIR}/graphics_2")
     endif()
+
     if(MSVC)
       set(platform_graphics_SRC_DIR "${data_SRC_DIR}/graphics_2")
     endif()
+
     if(ANDROID)
       if(NOT skia_use_fixed_gamma_text)
         if(ANDROID_ABI STREQUAL "armeabi-v7a")
@@ -62,8 +65,10 @@ if(BUILD_TESTING)
     else()
       set(test_BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}")
     endif()
-    set(font_BIN_DIR "${test_BIN_DIR}/fonts")
+
+    set(assets_BIN_DIR "${test_BIN_DIR}/assets")
     set(data_BIN_DIR "${test_BIN_DIR}/data")
+
     if((MSVC OR XCODE) AND NOT IOS)
       set(test_BIN_DIR "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>")
     endif()
@@ -87,48 +92,14 @@ if(BUILD_TESTING)
       )
     endif()
 
-    add_custom_target(prepare_test_fonts
+    add_custom_target(prepare_test_assets
       COMMAND
-        ${CMAKE_COMMAND} -E make_directory "${font_BIN_DIR}"
+        ${CMAKE_COMMAND} -E make_directory "${assets_BIN_DIR}"
 
-      # Arimo font
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/Arimo/Arimo-BoldItalic.ttf"
-        "${font_BIN_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/Arimo/Arimo-Bold.ttf"
-        "${font_BIN_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/Arimo/Arimo-Italic.ttf"
-        "${font_BIN_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/Arimo/Arimo-Regular.ttf"
-        "${font_BIN_DIR}"
-
-      # Tinos font
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/Tinos/Tinos-BoldItalic.ttf"
-        "${font_BIN_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/Tinos/Tinos-Bold.ttf"
-        "${font_BIN_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/Tinos/Tinos-Italic.ttf"
-        "${font_BIN_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/Tinos/Tinos-Regular.ttf"
-        "${font_BIN_DIR}"
-
-      # Asian fonts
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/amiri-0.104/amiri-regular.ttf"
-        "${font_BIN_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/fireflysung-1.3.0/fireflysung.ttf"
-        "${font_BIN_DIR}"
-      COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${font_SRC_DIR}/AsianFonts/Sanskrit2003.ttf"
-        "${font_BIN_DIR}"
+      # Assets
+      COMMAND ${CMAKE_COMMAND} -E copy_directory
+        "${assets_SRC_DIR}"
+        "${assets_BIN_DIR}"
     )
 
     add_custom_target(prepare_test_data
@@ -142,7 +113,7 @@ if(BUILD_TESTING)
     )
 
     add_dependencies(${test_NAME}
-      prepare_test_fonts
+      prepare_test_assets
       prepare_test_data
     )
   endmacro()
@@ -150,8 +121,8 @@ if(BUILD_TESTING)
 
   macro(cmr_rmlui_push_test_data)
     if(ANDROID)
-      add_test(NAME push_fonts
-        COMMAND ${adb_exec} push "${font_BIN_DIR}" "${TEST_WORK_DIR}/fonts"
+      add_test(NAME push_assets
+        COMMAND ${adb_exec} push "${assets_BIN_DIR}" "${TEST_WORK_DIR}/assets"
       )
       add_test(NAME push_data
         COMMAND ${adb_exec} push "${data_BIN_DIR}" "${TEST_WORK_DIR}/data"
@@ -199,10 +170,49 @@ if(BUILD_TESTING)
     PRIVATE
       ${test_src_DIR}/example_test.cpp
       ${test_src_DIR}/FileUtil.cpp
+
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontEngineInterfaceDefault.cpp
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontEngineInterfaceDefault.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontFace.cpp
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontFace.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontFaceHandleDefault.cpp
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontFaceHandleDefault.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontFaceLayer.cpp
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontFaceLayer.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontFamily.cpp
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontFamily.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontProvider.cpp
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontProvider.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/FontTypes.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/TextureDatabase.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/TextureLayout.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/TextureLayoutRectangle.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/TextureLayoutRow.h
+      ${test_src_DIR}/SkiaRmlBackend/RmlUiFontEngineDefault/TextureLayoutTexture.h
+
+      ${test_src_DIR}/SkiaRmlBackend/SkiaBackend.cpp
+      ${test_src_DIR}/SkiaRmlBackend/SkiaBackend.h
+      ${test_src_DIR}/SkiaRmlBackend/SkiaRenderInterface.cpp
+      ${test_src_DIR}/SkiaRmlBackend/SkiaRenderInterface.h
+      ${test_src_DIR}/SkiaRmlBackend/SkiaSystemInterface.cpp
+      ${test_src_DIR}/SkiaRmlBackend/SkiaSystemInterface.h
+      ${test_src_DIR}/SkiaRmlBackend/SkiaType.cpp
+      ${test_src_DIR}/SkiaRmlBackend/SkiaType.h
+
+      ${test_src_DIR}/RmlUiSamples/FileBrowser.cpp
+      ${test_src_DIR}/RmlUiSamples/FileBrowser.h
+      ${test_src_DIR}/RmlUiSamples/PlatformExtensions.cpp
+      ${test_src_DIR}/RmlUiSamples/PlatformExtensions.h
   )
+
   set_target_properties(${test_NAME} PROPERTIES
     CXX_STANDARD 17
     C_STANDARD 11
+  )
+
+  target_include_directories(${test_NAME}
+    PRIVATE
+      ${test_src_DIR}
   )
 
   # RmlUi
